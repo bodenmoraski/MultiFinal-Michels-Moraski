@@ -1,0 +1,56 @@
+{
+    "organization_name": "The Clear Fund (GiveWell)",
+    "fiscal_year": "2022",
+    "mission": "Finding outstanding giving opportunities and publishing the full details of the analysis to help donors decide where to give.",
+    "website": "www.givewell.org",
+    "gross_receipts": 151435102,
+    "total_revenue": 151012759,
+    "total_expenses": 152422669,
+    "revenue_less_expenses": -1409910,
+    "contributions_and_grants": 151406685,
+    "program_service_revenue": 0,
+    "investment_income": -393926,
+    "other_revenue": 0,
+    "grants_and_similar_amounts_paid": 138375405,
+    "salaries_and_employee_benefits": 8141852,
+    "other_expenses": 5905412,
+    "fundraising_expenses": 537490,
+    "total_assets_beginning": 165963654,
+    "total_assets_end": 117537288,
+    "total_liabilities_beginning": 86770175,
+    "total_liabilities_end": 39746494,
+    "net_assets_beginning": 79193479,
+    "net_assets_end": 77790794,
+    "number_of_employees": 68,
+    "number_of_volunteers": 5,
+    "largest_program_expenses": {
+      "top_charities_and_grant_research": {
+        "expenses": 147981869,
+        "grants": 138375405,
+        "revenue": 0
+      }
+    },
+    "unrelated_business_income": 0,
+    "net_unrelated_business_income": 0,
+    "investment_in_securities": true,
+    "land_buildings_and_equipment": true,
+    "policies": {
+      "conflict_of_interest_policy": true,
+      "whistleblower_policy": true,
+      "document_retention_policy": true,
+      "compensation_review_process": true
+    },
+    "audited_financials": false,
+    "top_individual_salaries": {
+      "Elie Hassenfeld (CEO)": 355000,
+      "Whitney Rider (Head of HR & Ops)": 285750,
+      "Stephanie Stojanovic (Director of Development)": 263768,
+      "Natalie Crispin (Treasurer/Senior Program Officer)": 209226,
+      "Benjamin Bateman (Director of Operations)": 213230
+    },
+    "foreign_grants": 41235338,
+    "domestic_grants": 97140067,
+    "program_expense_ratio": 0.908,
+    "fundraising_efficiency": 281.6
+  }
+  

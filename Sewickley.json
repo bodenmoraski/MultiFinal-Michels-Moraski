@@ -1,0 +1,56 @@
+{
+    "organization_name": "Sewickley Academy",
+    "fiscal_year": "2022-07-01 to 2023-06-30",
+    "mission": "Inspires and educates students to engage their hearts, minds, and hands to cultivate their full individual and collective potential in the service of a greater good.",
+    "website": "www.sewickley.org",
+    "gross_receipts": 28201934,
+    "total_revenue": 21363025,
+    "total_expenses": 24413880,
+    "revenue_less_expenses": -3050855,
+    "contributions_and_grants": 6490213,
+    "program_service_revenue": 13866274,
+    "investment_income": 617965,
+    "other_revenue": 388573,
+    "grants_and_similar_amounts_paid": 3189292,
+    "salaries_and_employee_benefits": 11963452,
+    "other_expenses": 9261136,
+    "fundraising_expenses": 815193,
+    "total_assets_beginning": 76396040,
+    "total_assets_end": 76051339,
+    "total_liabilities_beginning": 6980073,
+    "total_liabilities_end": 5732108,
+    "net_assets_beginning": 69415967,
+    "net_assets_end": 70319231,
+    "number_of_employees": 233,
+    "number_of_volunteers": 140,
+    "largest_program_expenses": {
+      "education_program": {
+        "expenses": 13534420,
+        "grants": 3189292,
+        "revenue": 13101477
+      }
+    },
+    "unrelated_business_income": 0,
+    "net_unrelated_business_income": 0,
+    "investment_in_securities": true,
+    "land_buildings_and_equipment": true,
+    "policies": {
+      "conflict_of_interest_policy": true,
+      "whistleblower_policy": true,
+      "document_retention_policy": true,
+      "compensation_review_process": true
+    },
+    "audited_financials": false,
+    "top_individual_salaries": {
+      "Ashley Brown Birtwell (Head of School)": 460158,
+      "David Denardo (Chief Financial & Operations Officer)": 182250,
+      "Win Palmer (Director of Athletics)": 172118,
+      "Jim Miller (Director of Buildings and Grounds)": 135297,
+      "David Fortna (Chief External Affairs Officer)": 135476
+    },
+    "foreign_grants": 0,
+    "domestic_grants": 3189292,
+    "program_expense_ratio": 0.5539,
+    "fundraising_efficiency": 7.96
+  }
+  
