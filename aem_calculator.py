@@ -17,14 +17,7 @@ class AEMCalculator:
         }
 
     def calculate_aem(self, financials: Dict[str, Any]) -> float:
-        """Calculate the Altruistic Effectiveness Metric (AEM) score for given financial data.
-        
-        Args:
-            financials: Dictionary containing financial data for an organization
-            
-        Returns:
-            float: AEM score between 0 and 1
-        """
+        """Calculate the Altruistic Effectiveness Metric (AEM) score."""
         # Extract Features
         program_expense_ratio = self._calculate_program_expense_ratio(financials)
         fundraising_efficiency = self._calculate_fundraising_efficiency(financials)
@@ -51,7 +44,7 @@ class AEMCalculator:
             return 0.0
         
         total_program_expenses = sum(
-            program['expenses'] 
+            program.get('expenses', 0)
             for program in financials['largest_program_expenses'].values()
         )
         return total_program_expenses / financials['total_expenses']
@@ -78,7 +71,7 @@ class AEMCalculator:
 
     def _calculate_executive_pay_reasonableness(self, financials: Dict[str, Any]) -> float:
         """Calculate the reasonableness of executive pay."""
-        if not financials['top_individual_salaries'] or financials['total_expenses'] == 0:
+        if not financials.get('top_individual_salaries') or financials['total_expenses'] == 0:
             return 1.0
         
         top_salary = max(financials['top_individual_salaries'].values())
@@ -86,6 +79,6 @@ class AEMCalculator:
 
     def _calculate_transparency(self, financials: Dict[str, Any]) -> float:
         """Calculate the transparency score based on policy implementation."""
-        if not financials['policies']:
+        if not financials.get('policies'):
             return 0.0
         return sum(1 for p in financials['policies'].values() if p) / len(financials['policies']) 
