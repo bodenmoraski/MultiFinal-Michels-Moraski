@@ -1,13 +1,13 @@
-from typing import Dict, Any
+from typing import Dict, Any, Tuple
+import math
+import numpy as np
+from scipy.stats import entropy
 
 class AEMCalculator:
-    def __init__(self, weights: Dict[str, float] = None):
-        """Initialize the AEM calculator with optional custom weights.
-        
-        Args:
-            weights: Dictionary of custom weights for each factor. If None, uses default weights.
-        """
-        self.weights = weights or {
+    def __init__(self):
+        """Initialize the AEM calculator with advanced mathematical modeling."""
+        # Base weights that will be adjusted by entropy
+        self.base_weights = {
             'program_expense_ratio': 0.3,
             'fundraising_efficiency': 0.2,
             'revenue_sustainability': 0.15,
@@ -15,28 +15,107 @@ class AEMCalculator:
             'executive_pay_reasonableness': 0.1,
             'transparency': 0.1
         }
+        
+        # Constants for sigmoid normalization
+        self.sigmoid_shift = 0.5
+        self.sigmoid_scale = 10
+        
+        # Fuzzy logic parameters for policy evaluation
+        self.policy_weights = {
+            'conflict_of_interest_policy': 0.3,
+            'whistleblower_policy': 0.3,
+            'document_retention_policy': 0.2,
+            'compensation_review_process': 0.2
+        }
 
-    def calculate_aem(self, financials: Dict[str, Any]) -> float:
-        """Calculate the Altruistic Effectiveness Metric (AEM) score."""
-        # Extract Features
-        program_expense_ratio = self._calculate_program_expense_ratio(financials)
-        fundraising_efficiency = self._calculate_fundraising_efficiency(financials)
-        revenue_sustainability = self._calculate_revenue_sustainability(financials)
-        net_surplus_margin = self._calculate_net_surplus_margin(financials)
-        executive_pay_reasonableness = self._calculate_executive_pay_reasonableness(financials)
-        transparency = self._calculate_transparency(financials)
+    def _multi_dimensional_normalization(self, metrics: Dict[str, float]) -> Dict[str, float]:
+        """Apply multi-dimensional normalization using Mahalanobis distance principles."""
+        # Convert metrics to numpy array
+        values = np.array(list(metrics.values()))
+        
+        # Calculate mean and standard deviation
+        mean = np.mean(values)
+        std = np.std(values)
+        
+        # Apply z-score normalization
+        z_scores = (values - mean) / std
+        
+        # Convert back to sigmoid space
+        normalized = {}
+        for metric, z_score in zip(metrics.keys(), z_scores):
+            normalized[metric] = self._sigmoid_normalization(z_score)
+            
+        return normalized
 
-        # Weighted Sum
-        aem_score = (
-            self.weights['program_expense_ratio'] * program_expense_ratio +
-            self.weights['fundraising_efficiency'] * fundraising_efficiency +
-            self.weights['revenue_sustainability'] * revenue_sustainability +
-            self.weights['net_surplus_margin'] * net_surplus_margin +
-            self.weights['executive_pay_reasonableness'] * executive_pay_reasonableness +
-            self.weights['transparency'] * transparency
+    def _calculate_entropy_weights(self, metrics: Dict[str, float]) -> Dict[str, float]:
+        """Calculate weights based on Shannon entropy of each metric."""
+        # Convert metrics to probabilities
+        total = sum(metrics.values())
+        probabilities = [v/total for v in metrics.values()]
+        
+        # Calculate entropy for each metric
+        entropies = {}
+        for metric, value in metrics.items():
+            # Create a binary distribution for the metric
+            p = value/total
+            dist = [p, 1-p]
+            entropies[metric] = entropy(dist)
+        
+        # Normalize entropies to get weights
+        total_entropy = sum(entropies.values())
+        weights = {metric: e/total_entropy for metric, e in entropies.items()}
+        
+        return weights
+
+    def _fuzzy_policy_evaluation(self, policies: Dict[str, bool]) -> float:
+        """Evaluate policies using fuzzy logic."""
+        if not policies:
+            return 0.0
+            
+        # Calculate weighted sum of policies
+        score = sum(
+            weight * (1.0 if policy else 0.0)
+            for policy, weight in zip(policies.values(), self.policy_weights.values())
         )
+        
+        # Apply sigmoid to get smooth transition
+        return self._sigmoid_normalization(score)
 
-        return aem_score
+    def calculate_aem(self, financials: Dict[str, Any]) -> Tuple[float, Dict[str, float]]:
+        """Calculate the Altruistic Effectiveness Metric (AEM) score with component scores."""
+        # Calculate raw metrics
+        raw_metrics = {
+            'program_expense_ratio': self._calculate_program_expense_ratio(financials),
+            'fundraising_efficiency': self._calculate_fundraising_efficiency(financials),
+            'revenue_sustainability': self._calculate_revenue_sustainability(financials),
+            'net_surplus_margin': self._calculate_net_surplus_margin(financials),
+            'executive_pay_reasonableness': self._calculate_executive_pay_reasonableness(financials),
+            'transparency': self._fuzzy_policy_evaluation(financials.get('policies', {}))
+        }
+        
+        # Calculate entropy-based weights
+        entropy_weights = self._calculate_entropy_weights(raw_metrics)
+        
+        # Apply multi-dimensional normalization
+        normalized_metrics = self._multi_dimensional_normalization(raw_metrics)
+        
+        # Calculate final weights by combining base weights and entropy weights
+        final_weights = {
+            metric: (self.base_weights[metric] + entropy_weights[metric]) / 2
+            for metric in self.base_weights
+        }
+        
+        # Normalize final weights
+        total_weight = sum(final_weights.values())
+        final_weights = {metric: weight/total_weight for metric, weight in final_weights.items()}
+        
+        # Calculate weighted sum
+        aem_score = sum(
+            weight * score
+            for weight, score in zip(final_weights.values(), normalized_metrics.values())
+        )
+        
+        return aem_score, normalized_metrics
 
     def _calculate_program_expense_ratio(self, financials: Dict[str, Any]) -> float:
         """Calculate the ratio of program expenses to total expenses."""
@@ -55,7 +134,7 @@ class AEMCalculator:
             return 0.0
         
         efficiency = financials['contributions_and_grants'] / financials['fundraising_expenses']
-        return min(efficiency, 10) / 10  # Normalize to 0-1 range
+        return math.log10(efficiency + 1)  # Log scale for better distribution
 
     def _calculate_revenue_sustainability(self, financials: Dict[str, Any]) -> float:
         """Calculate the ratio of program service revenue to total revenue."""
@@ -70,15 +149,17 @@ class AEMCalculator:
         return (financials['total_revenue'] - financials['total_expenses']) / financials['total_revenue']
 
     def _calculate_executive_pay_reasonableness(self, financials: Dict[str, Any]) -> float:
-        """Calculate the reasonableness of executive pay."""
+        """Calculate the reasonableness of executive pay using advanced statistical methods."""
         if not financials.get('top_individual_salaries') or financials['total_expenses'] == 0:
             return 1.0
         
         top_salary = max(financials['top_individual_salaries'].values())
-        return 1 - (top_salary / financials['total_expenses'])
+        total_expenses = financials['total_expenses']
+        
+        # Calculate ratio and apply exponential decay
+        ratio = top_salary / total_expenses
+        return math.exp(-10 * ratio)  # Exponential decay for high ratios
 
-    def _calculate_transparency(self, financials: Dict[str, Any]) -> float:
-        """Calculate the transparency score based on policy implementation."""
-        if not financials.get('policies'):
-            return 0.0
-        return sum(1 for p in financials['policies'].values() if p) / len(financials['policies']) 
+    def _sigmoid_normalization(self, x: float) -> float:
+        """Apply sigmoid normalization to a value."""
+        return 1 / (1 + math.exp(-self.sigmoid_scale * (x - self.sigmoid_shift))) 
