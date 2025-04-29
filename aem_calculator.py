@@ -33,12 +33,20 @@ class AEMCalculator:
         # Convert metrics to numpy array
         values = np.array(list(metrics.values()))
         
+        # Handle case where all values are the same
+        if np.all(values == values[0]):
+            return {metric: 0.5 for metric in metrics.keys()}
+            
         # Calculate mean and standard deviation
         mean = np.mean(values)
         std = np.std(values)
         
-        # Apply z-score normalization
-        z_scores = (values - mean) / std
+        # Handle case where std is 0
+        if std == 0:
+            return {metric: 0.5 for metric in metrics.keys()}
+            
+        # Apply z-score normalization with clipping to prevent extreme values
+        z_scores = np.clip((values - mean) / std, -3, 3)
         
         # Convert back to sigmoid space
         normalized = {}
@@ -49,21 +57,29 @@ class AEMCalculator:
 
     def _calculate_entropy_weights(self, metrics: Dict[str, float]) -> Dict[str, float]:
         """Calculate weights based on Shannon entropy of each metric."""
-        # Convert metrics to probabilities
-        total = sum(metrics.values())
-        probabilities = [v/total for v in metrics.values()]
+        # Add small constant to prevent zero values
+        epsilon = 1e-10
+        adjusted_metrics = {k: v + epsilon for k, v in metrics.items()}
+        
+        # Convert to probabilities
+        total = sum(adjusted_metrics.values())
+        probabilities = {k: v/total for k, v in adjusted_metrics.items()}
         
         # Calculate entropy for each metric
         entropies = {}
-        for metric, value in metrics.items():
+        for metric, prob in probabilities.items():
             # Create a binary distribution for the metric
-            p = value/total
-            dist = [p, 1-p]
+            dist = [prob, 1-prob]
             entropies[metric] = entropy(dist)
         
         # Normalize entropies to get weights
         total_entropy = sum(entropies.values())
-        weights = {metric: e/total_entropy for metric, e in entropies.items()}
+        if total_entropy == 0:
+            return self.base_weights
+            
+        # Add small constant to weights to prevent zero weights
+        weights = {metric: (e + epsilon)/(total_entropy + len(entropies)*epsilon) 
+                  for metric, e in entropies.items()}
         
         return weights
 
@@ -119,47 +135,134 @@ class AEMCalculator:
 
     def _calculate_program_expense_ratio(self, financials: Dict[str, Any]) -> float:
         """Calculate the ratio of program expenses to total expenses."""
-        if 'largest_program_expenses' not in financials:
+        # Use pre-calculated ratio if available
+        if 'program_expense_ratio' in financials:
+            ratio = financials['program_expense_ratio']
+            # Normalize to 0-1 range with 0.6 as ideal
+            return self._sigmoid_normalization(ratio - 0.6)
+            
+        if 'largest_program_expenses' not in financials or financials['total_expenses'] == 0:
             return 0.0
         
         total_program_expenses = sum(
             program.get('expenses', 0)
             for program in financials['largest_program_expenses'].values()
         )
-        return total_program_expenses / financials['total_expenses']
+        ratio = total_program_expenses / financials['total_expenses']
+        # Normalize to 0-1 range with 0.6 as ideal
+        return self._sigmoid_normalization(ratio - 0.6)
 
     def _calculate_fundraising_efficiency(self, financials: Dict[str, Any]) -> float:
         """Calculate and normalize fundraising efficiency."""
+        # Use pre-calculated efficiency if available
+        if 'fundraising_efficiency' in financials:
+            efficiency = financials['fundraising_efficiency']
+            # Normalize efficiency score (ideal around 10)
+            # Use log scale to better handle high values
+            return self._sigmoid_normalization(math.log10(efficiency) - 0.8)
+            
         if financials['fundraising_expenses'] == 0:
             return 0.0
         
         efficiency = financials['contributions_and_grants'] / financials['fundraising_expenses']
-        return math.log10(efficiency + 1)  # Log scale for better distribution
+        return self._sigmoid_normalization(math.log10(efficiency) - 0.8)
 
     def _calculate_revenue_sustainability(self, financials: Dict[str, Any]) -> float:
         """Calculate the ratio of program service revenue to total revenue."""
         if financials['total_revenue'] == 0:
             return 0.0
-        return financials['program_service_revenue'] / financials['total_revenue']
+        ratio = financials['program_service_revenue'] / financials['total_revenue']
+        # Normalize to 0-1 range with 0.5 as ideal
+        return self._sigmoid_normalization(ratio - 0.5)
 
     def _calculate_net_surplus_margin(self, financials: Dict[str, Any]) -> float:
         """Calculate the net surplus margin."""
         if financials['total_revenue'] == 0:
             return 0.0
-        return (financials['total_revenue'] - financials['total_expenses']) / financials['total_revenue']
+        margin = (financials['total_revenue'] - financials['total_expenses']) / financials['total_revenue']
+        # Normalize margin to 0-1 range, with 0.05 (5%) as ideal
+        return self._sigmoid_normalization(margin - 0.05)
 
     def _calculate_executive_pay_reasonableness(self, financials: Dict[str, Any]) -> float:
         """Calculate the reasonableness of executive pay using advanced statistical methods."""
         if not financials.get('top_individual_salaries') or financials['total_expenses'] == 0:
-            return 1.0
+            return 0.5  # Neutral score if no data
         
         top_salary = max(financials['top_individual_salaries'].values())
         total_expenses = financials['total_expenses']
         
-        # Calculate ratio and apply exponential decay
+        # Calculate ratio and normalize
         ratio = top_salary / total_expenses
-        return math.exp(-10 * ratio)  # Exponential decay for high ratios
+        # Ideal ratio is around 0.015 (1.5% of total expenses)
+        return self._sigmoid_normalization(0.015 - ratio)
 
     def _sigmoid_normalization(self, x: float) -> float:
         """Apply sigmoid normalization to a value."""
-        return 1 / (1 + math.exp(-self.sigmoid_scale * (x - self.sigmoid_shift))) 
+        # Adjust sigmoid parameters for better distribution
+        return 1 / (1 + math.exp(-3 * x))  # Reduced scale for smoother transition
+
+    def _calculate_program_expense_ratio(self, financials: Dict[str, Any]) -> float:
+        """Calculate the ratio of program expenses to total expenses."""
+        # Use pre-calculated ratio if available
+        if 'program_expense_ratio' in financials:
+            return financials['program_expense_ratio']
+            
+        if 'largest_program_expenses' not in financials or financials['total_expenses'] == 0:
+            return 0.0
+        
+        total_program_expenses = sum(
+            program.get('expenses', 0)
+            for program in financials['largest_program_expenses'].values()
+        )
+        ratio = total_program_expenses / financials['total_expenses']
+        # Normalize to 0-1 range with 0.7 as ideal
+        return self._sigmoid_normalization(ratio - 0.7)
+
+    def _calculate_fundraising_efficiency(self, financials: Dict[str, Any]) -> float:
+        """Calculate and normalize fundraising efficiency."""
+        # Use pre-calculated efficiency if available
+        if 'fundraising_efficiency' in financials:
+            efficiency = financials['fundraising_efficiency']
+            # Normalize efficiency score (ideal around 10)
+            # Use log scale to better handle high values
+            return self._sigmoid_normalization(math.log10(efficiency) - 0.8)
+            
+        if financials['fundraising_expenses'] == 0:
+            return 0.0
+        
+        efficiency = financials['contributions_and_grants'] / financials['fundraising_expenses']
+        return self._sigmoid_normalization(math.log10(efficiency) - 0.8)
+
+    def _calculate_revenue_sustainability(self, financials: Dict[str, Any]) -> float:
+        """Calculate the ratio of program service revenue to total revenue."""
+        if financials['total_revenue'] == 0:
+            return 0.0
+        ratio = financials['program_service_revenue'] / financials['total_revenue']
+        # Normalize to 0-1 range with 0.6 as ideal
+        return self._sigmoid_normalization(ratio - 0.6)
+
+    def _calculate_net_surplus_margin(self, financials: Dict[str, Any]) -> float:
+        """Calculate the net surplus margin."""
+        if financials['total_revenue'] == 0:
+            return 0.0
+        margin = (financials['total_revenue'] - financials['total_expenses']) / financials['total_revenue']
+        # Normalize margin to 0-1 range, with 0.05 (5%) as ideal
+        return self._sigmoid_normalization(margin - 0.05)
+
+    def _calculate_executive_pay_reasonableness(self, financials: Dict[str, Any]) -> float:
+        """Calculate the reasonableness of executive pay using advanced statistical methods."""
+        if not financials.get('top_individual_salaries') or financials['total_expenses'] == 0:
+            return 0.5  # Neutral score if no data
+        
+        top_salary = max(financials['top_individual_salaries'].values())
+        total_expenses = financials['total_expenses']
+        
+        # Calculate ratio and normalize
+        ratio = top_salary / total_expenses
+        # Ideal ratio is around 0.02 (2% of total expenses)
+        return self._sigmoid_normalization(0.02 - ratio)
+
+    def _sigmoid_normalization(self, x: float) -> float:
+        """Apply sigmoid normalization to a value."""
+        # Adjust sigmoid parameters for better distribution
+        return 1 / (1 + math.exp(-5 * x))  # Reduced scale for smoother transition 

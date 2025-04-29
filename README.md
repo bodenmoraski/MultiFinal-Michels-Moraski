@@ -1,6 +1,6 @@
-# Altruistic Effectiveness Metric (AEM) Calculator
+# Altruistic Effectiveness Metric (AEM) Mathematical Model
 
-The AEM Calculator is a tool designed to evaluate the effectiveness of nonprofit organizations based on their financial data from Form 990 filings. It provides a quantitative measure of how effectively an organization uses its resources to achieve its mission.
+Our (Boden Moraski & Ben Michels) AEM Mathematical Model is a tool designed to evaluate the "altruistic effectiveness" of nonprofit organizations based on their financial data from Form 990 filings. It provides a quantitative measure of how effectively an organization uses its resources to achieve its given mission.
 
 ## How the Model Works
 
@@ -13,7 +13,7 @@ The AEM score is calculated using six key components, each weighted according to
 2. **Fundraising Efficiency (20%)**
    - Evaluates how effectively fundraising dollars are used
    - Formula: Contributions and Grants / Fundraising Expenses
-   - Normalized to a 0-1 scale (capped at 10:1 ratio)
+   - Normalized to a 0-1 scale (capped at 10:1 ratio for now)
 
 3. **Revenue Sustainability (15%)**
    - Assesses the stability of revenue sources
@@ -39,9 +39,10 @@ The AEM score is calculated using six key components, each weighted according to
 
 ### Installation
 1. Clone this repository
-2. Ensure you have the required files:
+2. Ensure you have the required files (quite important):
    - `main.py`
    - `aem_calculator.py`
+3. Ensure your lax tilt is sufficient to operate (over 5 degree positive pitch rotation from ear-to-ear axis)
 
 ### Running the Calculator
 
@@ -49,7 +50,7 @@ The AEM score is calculated using six key components, each weighted according to
    - Create a JSON file with the required financial data
    - See `SSA_fixed.json` for an example of the required format
 
-2. Run the calculator:
+2. Run the model:
    ```bash
    python main.py your_data_file.json
    ```
@@ -91,7 +92,7 @@ The AEM score ranges from 0 to 1:
 ## Example
 
 ```bash
-python main.py SSA_fixed.json
+python main.py SSA.json
 ```
 
 Output:
@@ -126,7 +127,7 @@ calculator = AEMCalculator(weights=custom_weights)
 
 ## Contributing
 
-Feel free to submit issues or pull requests to improve the model or add new features.
+Feel free to submit issues or pull requests to improve the model or add new features. Product originally developed circa 2025 by Ben Michels & Boden Moraski @ Shady Side Academy
 
 ## License
 

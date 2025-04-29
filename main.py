@@ -16,11 +16,14 @@ def main(input_file: str):
             
             # Calculate AEM score
             calculator = AEMCalculator()
-            aem_score = calculator.calculate_aem(financials)
+            aem_score, component_scores = calculator.calculate_aem(financials)
             
             print(f"\nAEM Analysis Results:")
             print(f"Organization: {financials.get('organization_name', 'Unknown')}")
             print(f"AEM Score: {aem_score:.3f}")
+            print("\nComponent Scores:")
+            for metric, score in component_scores.items():
+                print(f"{metric.replace('_', ' ').title()}: {score:.3f}")
             
     except json.JSONDecodeError as e:
         print(f"Error parsing JSON: {str(e)}")

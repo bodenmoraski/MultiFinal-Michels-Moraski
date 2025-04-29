@@ -10,7 +10,6 @@
 \usepackage{subcaption} % For subfigures
 \usepackage{float}      % For better figure placement
 \usepackage{mathtools}  % For additional math tools
-\usepackage{bm}         % For bold math symbols
 
 % Page setup
 \geometry{a4paper, margin=1in}
@@ -50,13 +49,13 @@ where $w_i$ represents the weight of each component and $f_i(x_i)$ is the normal
 To ensure comparability across organizations while accounting for metric correlations, we employ a sophisticated multi-dimensional normalization approach based on Mahalanobis distance principles:
 
 \begin{equation}
-    \bm{z} = \frac{\bm{x} - \bm{\mu}}{\bm{\sigma}}
+    \mathbf{z} = \frac{\mathbf{x} - \mathbf{\mu}}{\mathbf{\sigma}}
 \end{equation}
 
-where $\bm{x}$ is the vector of raw metrics, $\bm{\mu}$ is the mean vector, and $\bm{\sigma}$ is the standard deviation vector. This z-score normalization is then transformed into the unit interval using a sigmoid function:
+where $\mathbf{x}$ is the vector of raw metrics, $\mathbf{\mu}$ is the mean vector, and $\mathbf{\sigma}$ is the standard deviation vector. This z-score normalization is then transformed into the unit interval using a sigmoid function:
 
 \begin{equation}
-    f(\bm{z}) = \frac{1}{1 + e^{-\beta(\bm{z} - \alpha)}}
+    f(\mathbf{z}) = \frac{1}{1 + e^{-\beta(\mathbf{z} - \alpha)}}
 \end{equation}
 
 This approach provides several advantages:
@@ -147,7 +146,7 @@ Transparency & 0.10 & $\alpha = 0.5$, $\beta = 10$ \\
 
 \subsection{Mathematical Properties}
 
-The AEM model satisfies several important mathematical properties:
+The AEM model satisifies several important mathematical properties:
 
 \begin{enumerate}
     \item \textbf{Boundedness}: All scores are bounded between 0 and 1
@@ -200,3 +199,4 @@ The model was validated through [PLACEHOLDER: describe validation method]. The r
 This sophisticated mathematical framework provides a robust and nuanced assessment of charitable effectiveness, accounting for both absolute performance and relative context while maintaining statistical rigor and interpretability.
 
 \end{document}
+ 
