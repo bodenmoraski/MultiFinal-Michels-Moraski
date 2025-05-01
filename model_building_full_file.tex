@@ -68,43 +68,42 @@ This approach provides several advantages:
 
 \subsection{Entropy-Based Weighting}
 
-The model employs Shannon entropy to determine the information content of each metric:
+The model employs Shannon entropy to determine the information content of each metric, with a small constant $\epsilon$ added to prevent zero probabilities:
 
 \begin{equation}
-    H(X) = -\sum_{x \in X} p(x) \log_2 p(x)
+    p_i(x) = \frac{x_i + \epsilon}{\sum_{j=1}^{6} (x_j + \epsilon)}
 \end{equation}
 
-For each metric $i$, we calculate its entropy weight as:
+The entropy weight for each metric is then calculated as:
 
 \begin{equation}
-    w_i^{\text{entropy}} = \frac{H_i}{\sum_{j=1}^{6} H_j}
+    w_i^{\text{entropy}} = \frac{H_i + \epsilon}{\sum_{j=1}^{6} (H_j + \epsilon)}
 \end{equation}
 
-This ensures that metrics with higher information content receive greater weight in the final score. The entropy calculation is performed on the probability distribution of each metric's values:
+where $\epsilon = 10^{-10}$ ensures numerical stability.
+
+\subsection{Multi-Dimensional Normalization}
+
+The multi-dimensional normalization process includes several safeguards:
 
 \begin{equation}
-    p_i(x) = \frac{x_i}{\sum_{j=1}^{6} x_j}
-\end{equation}
-
-\subsection{Fuzzy Logic Policy Evaluation}
-
-The transparency component employs fuzzy logic to evaluate organizational policies:
-
-\begin{equation}
-    \text{Transparency} = \sum_{k=1}^{4} w_k \cdot \mu_k(p_k)
-\end{equation}
-
-where $w_k$ are the policy weights and $\mu_k(p_k)$ is the membership function for policy $k$. The membership function is defined as:
-
-\begin{equation}
-    \mu_k(p_k) = 
+    \mathbf{z} = 
     \begin{cases}
-    1 & \text{if policy } k \text{ is implemented} \\
-    0 & \text{otherwise}
+    \text{clip}\left(\frac{\mathbf{x} - \mathbf{\mu}}{\mathbf{\sigma}}, -3, 3\right) & \text{if } \mathbf{\sigma} \neq 0 \\
+    0.5 & \text{otherwise}
     \end{cases}
 \end{equation}
 
-The policy weights are calibrated based on their relative importance:
+This ensures that:
+\begin{itemize}
+    \item Extreme values are clipped to prevent distortion
+    \item Identical values result in neutral scores
+    \item Zero standard deviation is handled gracefully
+\end{itemize}
+
+\subsection{Policy Evaluation}
+
+The transparency component evaluates four key policies with equal weights:
 
 \begin{table}[h]
 \centering
@@ -112,15 +111,23 @@ The policy weights are calibrated based on their relative importance:
 \hline
 \textbf{Policy} & \textbf{Weight} \\
 \hline
-Conflict of Interest & 0.3 \\
-Whistleblower & 0.3 \\
-Document Retention & 0.2 \\
-Compensation Review & 0.2 \\
+Conflict of Interest & 0.25 \\
+Whistleblower & 0.25 \\
+Document Retention & 0.25 \\
+Compensation Review & 0.25 \\
 \hline
 \end{tabular}
-\caption{Policy Weights for Fuzzy Logic Evaluation}
+\caption{Policy Weights for Transparency Evaluation}
 \label{tab:policy_weights}
 \end{table}
+
+The transparency score is calculated as:
+
+\begin{equation}
+    \text{Transparency} = \frac{1}{4}\sum_{k=1}^{4} \mu_k(p_k)
+\end{equation}
+
+where $\mu_k(p_k)$ is 1 if policy $k$ is implemented and 0 otherwise.
 
 \subsection{Component Metrics}
 
@@ -132,17 +139,31 @@ The model incorporates six key metrics, each with specific normalization paramet
 \hline
 \textbf{Metric} & \textbf{Base Weight} & \textbf{Normalization Parameters} \\
 \hline
-Program Expense Ratio & 0.30 & $\alpha = 0.7$, $\beta = 10$ \\
-Fundraising Efficiency & 0.20 & $\alpha = 0.5$, $\beta = 10$ \\
-Revenue Sustainability & 0.15 & $\alpha = 0.5$, $\beta = 10$ \\
-Net Surplus Margin & 0.15 & $\alpha = 0.1$, $\beta = 10$ \\
-Executive Pay Reasonableness & 0.10 & $\alpha = 0.5$, $\beta = 10$ \\
-Transparency & 0.10 & $\alpha = 0.5$, $\beta = 10$ \\
+Program Expense Ratio & 0.30 & Ideal = 0.6, $\beta = 3$ \\
+Fundraising Efficiency & 0.20 & Log scale, Ideal = 0.8, $\beta = 3$ \\
+Revenue Sustainability & 0.15 & Ideal = 0.5, $\beta = 3$ \\
+Net Surplus Margin & 0.15 & Ideal = 0.05, $\beta = 3$ \\
+Executive Pay Reasonableness & 0.10 & Ideal = 0.015, $\beta = 3$ \\
+Transparency & 0.10 & Binary, $\beta = 3$ \\
 \hline
 \end{tabular}
 \caption{Component Metrics and Their Parameters}
 \label{tab:metrics}
 \end{table}
+
+\subsection{Normalization Functions}
+
+Each metric is normalized using a sigmoid function with specific parameters:
+
+\begin{equation}
+    f(x) = \frac{1}{1 + e^{-\beta(x - \alpha)}}
+\end{equation}
+
+where $\alpha$ is the ideal value and $\beta$ controls the steepness of the transition. For fundraising efficiency, we use a logarithmic transformation:
+
+\begin{equation}
+    f_{\text{fundraising}}(x) = \frac{1}{1 + e^{-\beta(\log_{10}(x) - \alpha)}}
+\end{equation}
 
 \subsection{Mathematical Properties}
 

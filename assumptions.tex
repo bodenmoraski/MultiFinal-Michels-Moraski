@@ -1,0 +1,65 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{setspace}
+
+% Page setup
+\geometry{a4paper, margin=1in}
+\setlength{\parindent}{0.5in}
+\setlength{\parskip}{0.5em}
+\onehalfspacing
+
+\begin{document}
+
+\section*{Model Assumptions}
+
+\subsection*{Core Definition}
+\begin{itemize}
+    \item We define altruistic effectiveness as a charity's ability to sustainably and efficiently operate in service of its mission, with strong governance and transparency. This includes financial health, administrative efficiency, structural scalability, and robust internal controls, rather than direct quantification of moral or utilitarian "impact" (such as QALYs or lives saved).
+\end{itemize}
+
+\subsection*{Scope and Applicability}
+\begin{itemize}
+    \item Our model does not attempt to assess what causes are most ethical or impactful. Instead, we evaluate how effectively an organization is structured and funded to carry out its mission, regardless of cause area.
+    
+    \item While our model is designed to be applicable across nonprofit sectors, we acknowledge that certain metrics may need sector-specific calibration for optimal performance.
+\end{itemize}
+
+\subsection*{Data and Transparency}
+\begin{itemize}
+    \item We assume that IRS Form 990s are a reliable and standardized source of financial information across nonprofits. While not perfect, they represent the most comprehensive and standardized financial reporting framework available for comparative analysis.
+    
+    \item We assume that data reported in Form 990s (e.g., revenue, expenses, grants, compensation) are accurate and suitable for comparative analysis, with appropriate safeguards against data quality issues affecting the final score.
+    
+    \item We assume that missing or incomplete data in Form 990s can be reasonably handled through our normalization and weighting processes.
+\end{itemize}
+
+\subsection*{Financial and Operational Metrics}
+\begin{itemize}
+    \item We assume that a higher ratio of program service expenses to total expenses (vs. admin/fundraising) reflects a stronger alignment with mission-oriented work, and thus higher operational effectiveness. We recognize that some administrative and fundraising expenses are necessary for organizational health and growth.
+    
+    \item We incorporate multiple dimensions of sustainability, including revenue diversification, expense management, and reserve adequacy. These are weighted according to their relative importance in maintaining long-term organizational viability.
+    
+    \item While we acknowledge potential correlations between different financial metrics, we treat them as independent components in our model, allowing for a more granular assessment of organizational effectiveness.
+\end{itemize}
+
+\subsection*{Scalability and Longevity}
+\begin{itemize}
+    \item While we do not model scalability in terms of intervention outcomes, we assume that organizations with lower marginal administrative costs and stable operating budgets are more capable of scaling operations without compromising structural integrity.
+    
+    \item We assume that the financial metrics used in our model provide a stable basis for comparison across different time periods, with appropriate normalization to account for economic conditions and organizational life cycles.
+\end{itemize}
+
+\subsection*{Model Design and Application}
+\begin{itemize}
+    \item The weights assigned to each component in our model reflect both industry best practices and the relative importance of each factor in determining overall organizational effectiveness. These weights are subject to validation and potential adjustment based on empirical evidence.
+    
+    \item We envision this model serving as a first-pass filter in a multi-stage evaluation process, helping to identify organizations that meet basic structural and financial criteria before more resource-intensive impact assessments are conducted.
+    
+    \item Since we are not modeling direct impact or long-term outcomes, we do not apply a temporal discount rate in this version of the model.
+    
+    \item Unlike in impact-based models, we do not differentiate effectiveness based on beneficiary species or sentience. The focus is entirely on organizational structure and financial operations.
+\end{itemize}
+
+\end{document}

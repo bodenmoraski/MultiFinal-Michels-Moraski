@@ -1,0 +1,49 @@
+{
+  "organization_name": "Episcopal Academy",
+  "fiscal_year": "2022-07-01 to 2023-06-30",
+  "mission": "Co-educational independent day school for grades Pre-K through 12 inspiring lives of purpose, faith, and integrity.",
+  "website": "www.episcopalacademy.org",
+  "gross_receipts": 76212402,
+  "total_revenue": 70693752,
+  "total_expenses": 57548966,
+  "revenue_less_expenses": 13144786,
+  "contributions_and_grants": 20039728,
+  "program_service_revenue": 47090875,
+  "investment_income": 3612017,
+  "other_revenue": -48868,
+  "grants_and_similar_amounts_paid": 8986092,
+  "salaries_and_employee_benefits": 32897859,
+  "other_expenses": 15665015,
+  "fundraising_expenses": 2979997,
+  "total_assets_beginning": 285908230,
+  "total_assets_end": 302553987,
+  "total_liabilities_beginning": 23861011,
+  "total_liabilities_end": 23626650,
+  "net_assets_beginning": 262047219,
+  "net_assets_end": 278927337,
+  "number_of_employees": 551,
+  "number_of_volunteers": 1149,
+  "largest_program_expenses": {
+    "instructional": {
+      "expenses": 50177773,
+      "grants": 8986092,
+      "revenue": 47179477
+    }
+  },
+  "unrelated_business_income": 90851,
+  "net_unrelated_business_income": 0,
+  "investment_in_securities": true,
+  "land_buildings_and_equipment": true,
+  "policies": {
+    "conflict_of_interest_policy": null,
+    "whistleblower_policy": null,
+    "document_retention_policy": null,
+    "compensation_review_process": null
+  },
+  "audited_financials": true,
+  "top_individual_salaries": {},
+  "foreign_grants": 0,
+  "domestic_grants": 8986092,
+  "program_expense_ratio": 0.8719,
+  "fundraising_efficiency": 6.72
+}

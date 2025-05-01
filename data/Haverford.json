@@ -1,0 +1,49 @@
+{
+  "organization_name": "The Haverford School",
+  "fiscal_year": "2022-07-01 to 2023-06-30",
+  "mission": "Provides a superior liberal arts education for boys in Pre-Kindergarten through Twelfth Grade.",
+  "website": "www.haverford.org",
+  "gross_receipts": 63960521,
+  "total_revenue": 53332450,
+  "total_expenses": 48227077,
+  "revenue_less_expenses": 5105373,
+  "contributions_and_grants": 11841190,
+  "program_service_revenue": 38851193,
+  "investment_income": 320361,
+  "other_revenue": 2319706,
+  "grants_and_similar_amounts_paid": 9649000,
+  "salaries_and_employee_benefits": 22986060,
+  "other_expenses": 15592017,
+  "fundraising_expenses": 3859556,
+  "total_assets_beginning": 222008012,
+  "total_assets_end": 228580905,
+  "total_liabilities_beginning": 62173353,
+  "total_liabilities_end": 62598579,
+  "net_assets_beginning": 159834659,
+  "net_assets_end": 165982326,
+  "number_of_employees": 324,
+  "number_of_volunteers": 57,
+  "largest_program_expenses": {
+    "instructional": {
+      "expenses": 39338390,
+      "grants": 9649000,
+      "revenue": 38851193
+    }
+  },
+  "unrelated_business_income": 182125,
+  "net_unrelated_business_income": 696449,
+  "investment_in_securities": true,
+  "land_buildings_and_equipment": true,
+  "policies": {
+    "conflict_of_interest_policy": null,
+    "whistleblower_policy": null,
+    "document_retention_policy": null,
+    "compensation_review_process": null
+  },
+  "audited_financials": true,
+  "top_individual_salaries": {},
+  "foreign_grants": 0,
+  "domestic_grants": 9649000,
+  "program_expense_ratio": 0.8157,
+  "fundraising_efficiency": 3.07
+}
